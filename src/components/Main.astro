@@ -1,0 +1,18 @@
+---
+import {TableContent, ColsInput} from '../react/components';
+---
+<main class="flex-grow flex flex-col py-3">
+  <section class="self-center">
+    <label for="cols">Number of columns:</label><br />
+    <ColsInput client:load />
+  </section>
+  <section class="flex-grow flex align-middle">
+    <div class="m-auto">
+      <table class="border-blue-800 border-solid border">
+        <tbody>
+          <TableContent client:load />
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
