@@ -1,7 +1,3 @@
-import { create } from "zustand";
-import type { ColsStateType } from "../types/game.types";
+import { atom } from 'nanostores';
 
-export const useNumberOfCols = create<ColsStateType>((set) => ({
-  cols: 10,
-  setCols: (cols) => set(() => ({cols}))
-}))
+export const numberOfCols = atom(10);

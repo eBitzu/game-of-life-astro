@@ -1,18 +1,26 @@
 ---
-import {TableContent, ColsInput} from '../react/components';
+import { TableContent } from "../react/components";
 ---
+
+<script>
+  import { numberOfCols } from "../state/cols.state";
+
+  // Set the store to true when the button is clicked
+  // @ts-ignore
+  function openDialog({ currentTarget: { value } }: Event) {
+    numberOfCols.set(+value);
+  }
+
+  document.getElementById("cols")!.addEventListener("change", openDialog);
+</script>
 <main class="flex-grow flex flex-col py-3">
   <section class="self-center">
     <label for="cols">Number of columns:</label><br />
-    <ColsInput client:load />
+    <input class="p-1" min={10} max={50} type="number" id="cols" value={10} />
   </section>
   <section class="flex-grow flex align-middle">
     <div class="m-auto">
-      <table class="border-blue-800 border-solid border">
-        <tbody>
-          <TableContent client:load />
-        </tbody>
-      </table>
+      <TableContent client:only="react" />
     </div>
   </section>
 </main>
