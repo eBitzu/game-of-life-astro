@@ -1,9 +1,6 @@
-import { type FC, type MouseEvent } from "react";
-import { useStore } from "@nanostores/react";
-import { useGetGameState } from "../hooks/state.hook";
+import { useEffect, type FC, type MouseEvent } from "react";
 import c from "classnames";
-import { numberOfCols } from "../../state/cols.state";
-import { useToggleState } from "../hooks/toggle.hook";
+import { useGetArray, useGetGameState, useToggleState } from "../hooks";
 import { Controls } from "./controls.component";
 
 type Context = {
@@ -33,12 +30,21 @@ function colMapper(this: Context, col: number) {
 }
 
 export const TableContent: FC = () => {
-  const cols = useStore(numberOfCols);
-  const array = new Array(cols).fill(0).map((_el, index) => index);
+  const array = useGetArray();
   const [isPlaying, toggle] = useToggleState(false);
   const [life, setLife] = useGetGameState(isPlaying);
 
+  useEffect(() => {
+    if(!life.size && isPlaying) {
+      // everybody died
+      toggle();
+    }
+  }, [life]);
+
   const handleClick = (e: MouseEvent<HTMLTableCellElement>) => {
+    if (isPlaying) {
+      return;
+    }
     const cell = e.currentTarget.dataset.cell || "";
     const newLife = new Map(life);
     if (newLife.has(cell)) {
@@ -64,7 +70,9 @@ export const TableContent: FC = () => {
         <tbody>
           {array.map((row) => (
             <tr key={"row_" + row} data-row={row}>
-              {array.map(colMapper.bind({ life, row, cols, handleClick }))}
+              {array.map(
+                colMapper.bind({ life, row, cols: array.length, handleClick })
+              )}
             </tr>
           ))}
         </tbody>

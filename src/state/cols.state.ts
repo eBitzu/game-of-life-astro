@@ -1,3 +1,3 @@
 import { atom } from 'nanostores';
 
-export const numberOfCols = atom(10);
+export const numberOfCols = atom(50);

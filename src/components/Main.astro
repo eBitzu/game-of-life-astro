@@ -10,13 +10,14 @@ import { TableContent } from "../react/components";
   function openDialog({ currentTarget: { value } }: Event) {
     numberOfCols.set(+value);
   }
-
-  document.getElementById("cols")!.addEventListener("change", openDialog);
+  const colsInput = document.getElementById("cols") as HTMLInputElement;
+  colsInput.value = numberOfCols.get().toString();
+  colsInput.addEventListener("change", openDialog);
 </script>
 <main class="flex-grow flex flex-col py-3">
   <section class="self-center">
     <label for="cols">Number of columns:</label><br />
-    <input class="p-1" min={10} max={50} type="number" id="cols" value={10} />
+    <input class="p-1" min={10} max={50} type="number" id="cols" />
   </section>
   <section class="flex-grow flex align-middle">
     <div class="m-auto">

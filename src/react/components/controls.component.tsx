@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import c from 'classnames';
 
 type ControlsProps = {
   isPlaying: boolean;
@@ -17,10 +18,13 @@ export const Controls: FC<ControlsProps> = ({
     <>
       <button
         type="button"
-        className="rounded-lg bg-blue-300 p-3 mb-2 mr-1"
+        className={c('rounded-lg bg-blue-300 p-3 mb-2 mr-1',{
+          'bg-gray-400': !hasLife
+        })}
         onClick={onToggle}
+        disabled={!hasLife}
       >
-        {isPlaying ? "Stop" : "Start"}
+        {isPlaying ? "Stop Simulation" : "Start Simulation"}
       </button>
       {!isPlaying && hasLife ? (
         <button
@@ -28,7 +32,7 @@ export const Controls: FC<ControlsProps> = ({
           onClick={onReset}
           className="rounded-lg bg-blue-500 p-3 mb-2"
         >
-          Reset
+          Reset Board
         </button>
       ) : null}
     </>
