@@ -1,6 +1,8 @@
 {
   "name": "game-of-life-astro",
   "type": "module",
+  "private": "true",
+  "author": "Gabriel Raducu",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",

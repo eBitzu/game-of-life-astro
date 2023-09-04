@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import type { GameStateType } from "../../types/game.types";
 import { useStore } from "@nanostores/react";
-import { numberOfCols } from "../../state/cols.state";
+import { nrOfIterations$, speedMs$ } from "../../state/atoms.state";
+import { numberOfColumns } from "../../constants/number.cols";
 
-const getNeighbors = (row: number, col: number): Array<string> =>
-  ([
-    `${row - 1},${col - 1}`,
-    `${row - 1},${col}`,
-    `${row - 1},${col + 1}`,
-    `${row},${col - 1}`,
-    `${row},${col + 1}`,
-    `${row + 1},${col - 1}`,
-    `${row + 1},${col}`,
-    `${row + 1},${col + 1}`,
-  ])
+const getNeighbors = (row: number, col: number): Array<string> => [
+  `${row - 1},${col - 1}`,
+  `${row - 1},${col}`,
+  `${row - 1},${col + 1}`,
+  `${row},${col - 1}`,
+  `${row},${col + 1}`,
+  `${row + 1},${col - 1}`,
+  `${row + 1},${col}`,
+  `${row + 1},${col + 1}`,
+];
 
 const getAliveNeighborsCount = (
   i: number,
@@ -22,24 +22,19 @@ const getAliveNeighborsCount = (
 ) => getNeighbors(i, j).filter((val) => oldState.has(val)).length;
 
 function calculateNextState(
-  this: number,
   oldState: GameStateType
 ): GameStateType {
   // calculate life;
-  const cols = this;
   const newState = new Map();
-  for (let i = 0; i < cols + 1; i++) {
-    for (let j = 0; j < cols + 1; j++) {
+  for (let i = -1; i <= numberOfColumns + 1; i++) {
+    for (let j = -1; j <= numberOfColumns + 1; j++) {
       const aliveNeighborsCount = getAliveNeighborsCount(i, j, oldState);
-      const key =`${i},${j}`;
-      if(oldState.has(key)) {
-        if(aliveNeighborsCount === 2 || aliveNeighborsCount === 3) {
-          newState.set(key, true)
-        }
-      } else {
-        if(aliveNeighborsCount === 3) {
-          newState.set(key, true);
-        }
+      const key = `${i},${j}`;
+      if (
+        aliveNeighborsCount === 3 ||
+        (oldState.has(key) && aliveNeighborsCount === 2)
+      ) {
+        newState.set(key, true);
       }
     }
   }
@@ -48,15 +43,16 @@ function calculateNextState(
 }
 
 export const useGetGameState = (start: boolean) => {
-  const cols = useStore(numberOfCols);
+  const speed = useStore(speedMs$);
   const state = useState<GameStateType>(new Map([]));
   const int = useRef<number>();
   useEffect(() => {
     const [, setState] = state;
     if (start) {
       int.current = setInterval(() => {
-        setState(calculateNextState.bind(cols));
-      }, 500);
+        setState(calculateNextState);
+        nrOfIterations$.set(nrOfIterations$.get() +1);
+      }, speed);
     } else {
       if (int.current !== null) {
         clearInterval(int.current);
@@ -68,7 +64,7 @@ export const useGetGameState = (start: boolean) => {
         clearInterval(int.current);
       }
     };
-  }, [start]);
+  }, [start, speed]);
 
   return state;
 };

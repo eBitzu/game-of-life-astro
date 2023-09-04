@@ -3,21 +3,47 @@ import { TableContent } from "../react/components";
 ---
 
 <script>
-  import { numberOfCols } from "../state/cols.state";
+  import {
+    speedMs$,
+    nrOfIterations$,
+  } from "../state/atoms.state";
 
-  // Set the store to true when the button is clicked
   // @ts-ignore
-  function openDialog({ currentTarget: { value } }: Event) {
-    numberOfCols.set(+value);
+  function handleChangeSpped({ currentTarget: { value } }: Event) {
+    speedMs$.set(+value);
   }
-  const colsInput = document.getElementById("cols") as HTMLInputElement;
-  colsInput.value = numberOfCols.get().toString();
-  colsInput.addEventListener("change", openDialog);
+  const speedInput = document.getElementById("speed") as HTMLInputElement;
+  const iterations = document.getElementById("iterations") as HTMLInputElement;
+
+  nrOfIterations$.subscribe((itValue) => {
+    iterations.value = itValue.toString();
+  });
+
+  if (speedInput) {
+    speedInput.value = speedMs$.get().toString();
+  }
+
+  window.onbeforeunload = () => {
+    speedInput?.removeEventListener("change", handleChangeSpped);
+  };
 </script>
 <main class="flex-grow flex flex-col py-3">
-  <section class="self-center">
-    <label for="cols">Number of columns:</label><br />
-    <input class="p-1" min={10} max={50} type="number" id="cols" />
+  <section class="self-center grid grid-cols-3 gap-3">
+    <div>
+      <label for="cols">Speed in ms:</label><br />
+      <input class="p-1" min={100} max={500} type="number" id="speed" />
+    </div>
+    <div>
+      <label for="cols">Nr of iterations:</label><br />
+      <input
+        disabled
+        class="p-1 bg-gray-300"
+        type="number"
+        max={99}
+        min={0}
+        id="iterations"
+      />
+    </div>
   </section>
   <section class="flex-grow flex align-middle">
     <div class="m-auto">

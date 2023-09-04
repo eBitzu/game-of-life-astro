@@ -2,16 +2,16 @@ import { useEffect, type FC, type MouseEvent } from "react";
 import c from "classnames";
 import { useGetArray, useGetGameState, useToggleState } from "../hooks";
 import { Controls } from "./controls.component";
+import { nrOfIterations$ } from "../../state/atoms.state";
 
 type Context = {
   row: number;
   life: Map<string, boolean>;
-  cols: number;
   handleClick: (e: MouseEvent<HTMLTableCellElement>) => void;
 };
 
 function colMapper(this: Context, col: number) {
-  const { row, life, cols, handleClick } = this;
+  const { row, life, handleClick } = this;
   const key = `cell_${row}_${col}`;
   const isActive = life.has(`${row},${col}`);
   return (
@@ -20,10 +20,8 @@ function colMapper(this: Context, col: number) {
       role="button"
       onClick={handleClick}
       data-cell={`${row},${col}`}
-      className={c("border border-gray-500", {
+      className={c("border p-1 border-gray-500 transition-colors ease-in-out delay-150", {
         "bg-black": isActive,
-        "p-1": cols > 25,
-        "p-3": cols <= 25,
       })}
     />
   );
@@ -55,7 +53,15 @@ export const TableContent: FC = () => {
     setLife(newLife);
   };
 
+  const handleToggle = () => {
+    if(!isPlaying) {
+      nrOfIterations$.set(0);
+    }
+    toggle();
+  }
+
   const handleReset = () => {
+    nrOfIterations$.set(0);
     setLife(new Map());
   };
   return (
@@ -63,7 +69,7 @@ export const TableContent: FC = () => {
       <Controls
         isPlaying={isPlaying}
         onReset={handleReset}
-        onToggle={toggle}
+        onToggle={handleToggle}
         hasLife={!!life.size}
       />
       <table className="border-blue-800 border-solid border">
@@ -71,7 +77,7 @@ export const TableContent: FC = () => {
           {array.map((row) => (
             <tr key={"row_" + row} data-row={row}>
               {array.map(
-                colMapper.bind({ life, row, cols: array.length, handleClick })
+                colMapper.bind({ life, row, handleClick })
               )}
             </tr>
           ))}
