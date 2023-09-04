@@ -21,6 +21,7 @@ import { TableContent } from "../react/components";
 
   if (speedInput) {
     speedInput.value = speedMs$.get().toString();
+    speedInput.addEventListener("change", handleChangeSpped);
   }
 
   window.onbeforeunload = () => {
@@ -31,7 +32,7 @@ import { TableContent } from "../react/components";
   <section class="self-center grid grid-cols-3 gap-3">
     <div>
       <label for="cols">Speed in ms:</label><br />
-      <input class="p-1" min={100} max={500} type="number" id="speed" />
+      <input class="p-1" min={50} max={500} step={50} type="number" id="speed" />
     </div>
     <div>
       <label for="cols">Nr of iterations:</label><br />

@@ -45,6 +45,7 @@ function calculateNextState(
 export const useGetGameState = (start: boolean) => {
   const speed = useStore(speedMs$);
   const state = useState<GameStateType>(new Map([]));
+  const [, setState] = state;
   const int = useRef<number>();
   useEffect(() => {
     const [, setState] = state;
