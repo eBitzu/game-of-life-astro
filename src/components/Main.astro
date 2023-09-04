@@ -29,7 +29,7 @@ import { TableContent } from "../react/components";
   };
 </script>
 <main class="flex-grow flex flex-col py-3">
-  <section class="self-center grid grid-cols-3 gap-3">
+  <section class="self-center grid grid-cols-2 gap-3">
     <div>
       <label for="cols">Speed in ms:</label><br />
       <input class="p-1" min={50} max={500} step={50} type="number" id="speed" />
@@ -46,7 +46,7 @@ import { TableContent } from "../react/components";
       />
     </div>
   </section>
-  <section class="flex-grow flex align-middle">
+  <section class="flex-grow flex align-middle mt-2">
     <div class="m-auto">
       <TableContent client:only="react" />
     </div>

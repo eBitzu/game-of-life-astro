@@ -20,7 +20,7 @@ function colMapper(this: Context, col: number) {
       role="button"
       onClick={handleClick}
       data-cell={`${row},${col}`}
-      className={c("border p-1 border-gray-500 transition-colors ease-in-out delay-150", {
+      className={c("border p-1.5 border-gray-500 transition-colors ease-in-out delay-150", {
         "bg-black": isActive,
       })}
     />
