@@ -48,7 +48,6 @@ export const useGetGameState = (start: boolean) => {
   const [, setState] = state;
   const int = useRef<number>();
   useEffect(() => {
-    const [, setState] = state;
     if (start) {
       int.current = setInterval(() => {
         setState(calculateNextState);
