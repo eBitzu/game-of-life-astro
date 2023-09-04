@@ -5,6 +5,8 @@ The build is provided by Astro 3, and the interactive parts are islands of React
 
 It uses nanostore as state management on the client
 
+Demo page [here](https://game-of-life-astro.vercel.app/)
+
 ## Astro Starter Kit: Basics
 
 ```
