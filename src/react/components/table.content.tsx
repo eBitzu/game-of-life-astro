@@ -3,6 +3,8 @@ import c from "classnames";
 import { useGetArray, useGetGameState, useToggleState } from "../hooks";
 import { Controls } from "./controls.component";
 import { nrOfIterations$ } from "../../state/atoms.state";
+import { STORAGE_KEY } from "../../constants/storage.const";
+import { getFromStorage } from "../../utils/storage.util";
 
 type Context = {
   row: number;
@@ -20,7 +22,7 @@ function colMapper(this: Context, col: number) {
       role="button"
       onClick={handleClick}
       data-cell={`${row},${col}`}
-      className={c("border p-1.5 border-gray-500 transition-colors ease-in-out delay-150", {
+      className={c("border p-1.5 border-gray-500 transition-colors ease-in-out delay-50", {
         "bg-black": isActive,
       })}
     />
@@ -31,6 +33,19 @@ export const TableContent: FC = () => {
   const array = useGetArray();
   const [isPlaying, toggle] = useToggleState(false);
   const [life, setLife] = useGetGameState(isPlaying);
+
+  const loadLifeFromStorage = () => {
+    const newLife = new Map();
+    const storageLifeStringy = getFromStorage(STORAGE_KEY);
+    storageLifeStringy.split(';').forEach(key => {
+      newLife.set(key, true);
+    })
+    setLife(newLife)
+  }
+
+  useEffect(() => {
+    loadLifeFromStorage();
+  }, []);
 
   useEffect(() => {
     if(!life.size && isPlaying) {
@@ -64,12 +79,18 @@ export const TableContent: FC = () => {
     nrOfIterations$.set(0);
     setLife(new Map());
   };
+
+  const handleSave = () => {
+    localStorage.setItem(STORAGE_KEY, [...life.keys()].join(';'))
+  }
   return (
     <>
       <Controls
         isPlaying={isPlaying}
         onReset={handleReset}
+        onLoad={loadLifeFromStorage}
         onToggle={handleToggle}
+        onSave={handleSave}
         hasLife={!!life.size}
       />
       <table className="border-blue-800 border-solid border">
