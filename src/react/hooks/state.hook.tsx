@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { GameStateType } from "../../types/game.types";
 import { useStore } from "@nanostores/react";
-import { nrOfIterations$, speedMs$ } from "../../state/atoms.state";
+import { isPlaying$, nrOfIterations$, speedMs$ } from "../../state/atoms.state";
 import { numberOfColumns } from "../../constants/number.cols";
 
 const getNeighbors = (row: number, col: number): Array<string> => [
@@ -42,7 +42,8 @@ function calculateNextState(
   return newState;
 }
 
-export const useGetGameState = (start: boolean) => {
+export const useGetGameState = () => {
+  const start = useStore(isPlaying$);
   const speed = useStore(speedMs$);
   const state = useState<GameStateType>(new Map([]));
   const [, setState] = state;
