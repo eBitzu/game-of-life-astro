@@ -8,10 +8,12 @@ import {
 } from "../../state/atoms.state";
 import { Controls } from "../components";
 import { loadLifeFromStorage } from "../../utils/storage.util";
+import { useGetGameState } from "../hooks";
 
 export const ControlsContainer = () => {
   const isPlaying = useStore(isPlaying$);
   const life = useStore(life$);
+  useGetGameState();
 
   const handleToggle = () => {
     if (!isPlaying) {
