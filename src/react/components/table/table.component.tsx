@@ -1,46 +1,22 @@
 import { useEffect, type FC, type MouseEvent } from "react";
-import c from "classnames";
-import { useGetArray, useGetGameState, useToggleState } from "../../hooks";
+import { useGetArray, useToggleState } from "../../hooks";
 import { loadLifeFromStorage } from "../../../utils/storage.util";
 import { ControlsContainer } from "../../containers/controls.container";
 import { numberOfColumns } from "../../../constants/number.cols";
+import { useStore } from "@nanostores/react";
+import { life$ } from "../../../state/atoms.state";
+import { colMapper } from "./table.mapper";
 
-type Context = {
-  row: number;
-  life: Map<string, boolean>;
-  handleClick: (e: MouseEvent<HTMLTableCellElement>) => void;
-};
-
-function colMapper(this: Context, col: number) {
-  const { row, life, handleClick } = this;
-  const key = `cell_${row}_${col}`;
-  const isActive = life.has(`${row},${col}`);
-  return (
-    <td
-      draggable
-      key={key}
-      role="button"
-      onClick={handleClick}
-      data-cell={`${row},${col}`}
-      className={c(
-        "border p-1.5 border-gray-500 transition-colors ease-in-out delay-50",
-        {
-          "bg-black": isActive,
-        }
-      )}
-    />
-  );
-}
 
 const sizeOfCell = 13;
 const widthOfContainer = sizeOfCell * numberOfColumns + 1;
 export const TableContent: FC = () => {
   const array = useGetArray();
   const [isPlaying, toggle] = useToggleState(false);
-  const [life, setLife] = useGetGameState();
+  const life = useStore(life$);
 
   useEffect(() => {
-    setLife(loadLifeFromStorage());
+    life$.set(loadLifeFromStorage());
   }, []);
 
   useEffect(() => {
@@ -54,18 +30,18 @@ export const TableContent: FC = () => {
     if (isPlaying) {
       return;
     }
-    const cell = e.currentTarget.dataset.cell || "";
+    const cell = e.currentTarget.dataset.cell ?? "";
     const newLife = new Map(life);
     if (newLife.has(cell)) {
       newLife.delete(cell);
     } else {
       newLife.set(cell, true);
     }
-    setLife(newLife);
+    life$.set(newLife);
   };
 
-  const handleDrag = (e: any) => {
-  console.log('a', e);
+  const handleDrag = () => {
+     // do something
   }
 
   return (

@@ -9,3 +9,5 @@ export const isPlaying$ = atom(false);
 export const togglePlaying = () => {
   isPlaying$.set(!isPlaying$.get());
 }
+
+export const life$ = atom<Map<string, boolean>>(new Map());

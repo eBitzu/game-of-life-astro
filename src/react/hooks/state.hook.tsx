@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef} from "react";
 import type { GameStateType } from "../../types/game.types";
 import { useStore } from "@nanostores/react";
-import { isPlaying$, nrOfIterations$, speedMs$ } from "../../state/atoms.state";
+import { isPlaying$, life$, nrOfIterations$, speedMs$ } from "../../state/atoms.state";
 import { numberOfColumns } from "../../constants/number.cols";
 
 const getNeighbors = (row: number, col: number): Array<string> => [
@@ -45,19 +45,16 @@ function calculateNextState(
 export const useGetGameState = () => {
   const start = useStore(isPlaying$);
   const speed = useStore(speedMs$);
-  const state = useState<GameStateType>(new Map([]));
-  const [, setState] = state;
   const int = useRef<number>();
   useEffect(() => {
     if (start) {
       int.current = setInterval(() => {
-        setState(calculateNextState);
+        const newState = calculateNextState(life$.get());
+        life$.set(newState);
         nrOfIterations$.set(nrOfIterations$.get() +1);
       }, speed);
-    } else {
-      if (int.current !== null) {
-        clearInterval(int.current);
-      }
+    } else if (int.current !== null) {
+      clearInterval(int.current);
     }
 
     return () => {
@@ -65,7 +62,5 @@ export const useGetGameState = () => {
         clearInterval(int.current);
       }
     };
-  }, [start, speed]);
-
-  return state;
+  }, [start, speed]);;
 };
