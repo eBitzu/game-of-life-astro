@@ -1,5 +1,7 @@
-import type { FC } from "react";
+import { createElement, type FC } from "react";
 import c from "classnames";
+import { Button } from "./button/button.component";
+import { loadLifeFromStorage } from "../../utils/storage.util";
 
 type ControlsProps = {
   isPlaying: boolean;
@@ -8,6 +10,23 @@ type ControlsProps = {
   onLoad: () => void;
   onSave: () => void;
   onToggle: () => void;
+};
+
+const ControlsInternal: FC<Omit<ControlsProps, "isPlaying" | "onToggle">> = ({
+  hasLife,
+  onReset,
+  onSave,
+  onLoad,
+}) => {
+  const hasStorage = loadLifeFromStorage().size > 1;
+  return hasLife ? (
+    <>
+      <Button onClick={onReset}>Reset Board</Button>
+      <Button onClick={onSave}>Save to storage</Button>
+    </>
+  ) : (
+    hasStorage && <Button onClick={onLoad}>Load from storage</Button>
+  );
 };
 
 export const Controls: FC<ControlsProps> = ({
@@ -19,45 +38,17 @@ export const Controls: FC<ControlsProps> = ({
   onToggle,
 }) => (
   <div className="gap-2 flex">
-    <button
-      type="button"
-      className={c("rounded-lg bg-blue-300 p-3 mb-2", {
+    <Button
+      className={c({
         "bg-gray-400": !hasLife,
       })}
       onClick={onToggle}
       disabled={!hasLife}
     >
       {isPlaying ? "Stop Simulation" : "Start Simulation"}
-    </button>
-    {!isPlaying ? (
-      hasLife ? (
-        <>
-          <button
-            type="button"
-            onClick={onReset}
-            className="rounded-lg bg-blue-500 p-3 mb-2"
-          >
-            Reset Board
-          </button>
-          <button
-            type="button"
-            onClick={onSave}
-            className="rounded-lg bg-blue-500 p-3 mb-2"
-          >
-            Save to storage
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            type="button"
-            onClick={onLoad}
-            className="rounded-lg bg-blue-500 p-3 mb-2"
-          >
-            Load from storage
-          </button>
-        </>
-      )
-    ) : null}
+    </Button>
+    {isPlaying
+      ? null
+      : createElement(ControlsInternal, { onSave, onReset, onLoad, hasLife })}
   </div>
 );
