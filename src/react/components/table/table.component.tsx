@@ -7,10 +7,10 @@ import { useStore } from "@nanostores/react";
 import { isPlaying$, life$, togglePlaying } from "../../../state/atoms.state";
 import { colMapper } from "./table.mapper";
 
-
 const sizeOfCell = 13;
 const widthOfContainer = sizeOfCell * numberOfColumns + 1;
-export const TableContent: FC = () => {
+
+export const GameContent: FC = () => {
   const array = useGetArray();
   const isPlaying = useStore(isPlaying$);
   const life = useStore(life$);
