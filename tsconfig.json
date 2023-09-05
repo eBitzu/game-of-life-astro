@@ -1,6 +1,9 @@
 {
   "extends": "astro/tsconfigs/strictest",
   "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "ESNext"],
+    "module": "ESNext",
     "jsx": "react-jsx",
     "jsxImportSource": "react"
   }
