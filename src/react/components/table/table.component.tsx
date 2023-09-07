@@ -2,18 +2,19 @@ import { useEffect, type FC, type MouseEvent } from "react";
 import { useGetArray } from "../../hooks";
 import { loadLifeFromStorage } from "../../../utils/storage.util";
 import { ControlsContainer } from "../../containers/controls.container";
-import { numberOfColumns } from "../../../constants/number.cols";
+
 import { useStore } from "@nanostores/react";
-import { isPlaying$, life$, togglePlaying } from "../../../state/atoms.state";
+import { isPlaying$, life$, numberOfColumns$, togglePlaying } from "../../../state/atoms.state";
 import { colMapper } from "./table.mapper";
 
-const sizeOfCell = 13;
-const widthOfContainer = sizeOfCell * numberOfColumns + 1;
 
 export const GameContent: FC = () => {
   const array = useGetArray();
   const isPlaying = useStore(isPlaying$);
   const life = useStore(life$);
+  const numberOfColumns = useStore(numberOfColumns$);
+  const sizeOfCell = numberOfColumns < 50 ? 25 : 13;
+  const widthOfContainer = sizeOfCell * numberOfColumns + 1;
 
   useEffect(() => {
     life$.set(loadLifeFromStorage());
@@ -48,7 +49,7 @@ export const GameContent: FC = () => {
     <>
       <ControlsContainer />
       <div
-        className="relative overflow-hidden"
+        className="relative overflow-hidden mx-auto mt-2"
         style={{
           width: widthOfContainer,
           height: widthOfContainer,

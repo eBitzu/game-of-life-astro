@@ -19,7 +19,7 @@ export function colMapper(this: Context, col: number) {
       onClick={handleClick}
       data-cell={`${row},${col}`}
       className={c(
-        "border p-1.5 border-gray-500 transition-colors ease-in-out delay-50",
+        "border p-3 lg:p-1.5 border-gray-500 transition-colors ease-in-out delay-50",
         {
           "bg-black": isActive,
         }
